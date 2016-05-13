@@ -1,4 +1,6 @@
 
+import pygame.gfxdraw as gfx
+
 SPR_PAWN   = 0
 SPR_KNIGHT = 1
 SPR_ROOK   = 2
@@ -17,9 +19,24 @@ class Piece():
         self.xpos = xpos
         self.ypos = ypos
         self.image = image
+        self.highlight_for_move = False
+
+    def is_at(self, x, y):
+        return self.xpos == x and self.ypos == y
+
+    def about_to_move(self, yes=True):
+        self.highlight_for_move = yes
 
     def draw(self, screen):
-        screen.blit(self.image, (56 + self.xpos * 64, 56 + self.ypos * 64))
+        dx = 44 + self.xpos * 64
+        dy = 44 + self.ypos * 64
+        
+        if self.highlight_for_move:
+            gfx.rectangle(screen, (dx, dy, 64, 64), (4, 133, 168))
+            gfx.rectangle(screen, (dx+1, dy+1, 62, 62), (4, 133, 168))
+            #screen.fill((4, 133, 168), (dx, dy, 64, 64))
+
+        screen.blit(self.image, (dx+8, dy+8))
 
 class PawnPiece(Piece):
     def __init__(self, sprites, color, xpos, ypos):

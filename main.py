@@ -22,6 +22,12 @@ class Loader:
         print("load_font: %s" % path)
         fnt = pg.font.Font(os.path.join(self.base_dir, path), size)
         return fnt
+    
+    def default_font(self, size=13):
+        path = pg.font.get_default_font()
+        print("load_font: %s" % path)
+        fnt = pg.font.Font(path, size)
+        return fnt
 
     def load_wav(self, path):
         print("load_wav: %s" % path)

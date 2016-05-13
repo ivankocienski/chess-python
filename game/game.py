@@ -8,6 +8,11 @@ class Game:
 
     def __init__(self, app):
         self.app = app 
+        self.font = self.app.loader.default_font()
+        self.hover_x = -1
+        self.hover_y = -1
+        self.move_piece = None
+
         self.piece_sprites = [
                 self.app.loader.load_image("piece-w-pawn.png"),
                 self.app.loader.load_image("piece-w-knight.png"),
@@ -42,14 +47,44 @@ class Game:
                 ]
         pass
 
+    def find_piece_at(self, xpos, ypos):
+        for p in self.pieces:
+            if p.is_at(xpos, ypos):
+                return p
+        return None
+
     def resize(self):
         pass
 
     def mouse_move(self, xp, yp):
-        pass
+        xp -= 44
+        if xp < 0 or xp > 512:
+            self.hover_x = -1
+            return
+
+        self.hover_x = int(xp / 64)
+
+        yp -= 44
+        if yp < 0 or yp > 512:
+            self.hover_y = -1
+            return
+
+        self.hover_y = int(yp / 64)
+
+        #print("move x=%d  y=%d"%(self.hover_x, self.hover_y))
+        self.app.repaint()
 
     def mouse_down(self):
-        pass 
+        if self.move_piece:
+            self.move_piece.about_to_move(False)
+
+        piece = self.find_piece_at(self.hover_x, self.hover_y)
+        if bool(piece):
+            self.move_piece = piece
+            print("piece=%s"%piece)
+            piece.about_to_move()
+        
+        self.app.repaint()
 
     def mouse_up(self): 
         pass
@@ -73,12 +108,14 @@ class Game:
             ypos += 64
             xpos  = 44
 
-        pos = 44
-        for x in range(9):
-            gfx.line(self.app.screen, 44, pos, 556, pos, (150, 150, 150))
-            gfx.line(self.app.screen, pos, 44, pos, 556, (150, 150, 150))
-            pos += 64
+        #pos = 44
+        #for x in range(9):
+        #    gfx.line(self.app.screen, 44, pos, 556, pos, (150, 150, 150))
+        #    gfx.line(self.app.screen, pos, 44, pos, 556, (150, 150, 150))
+        #    pos += 64
 
         for piece in self.pieces:
             piece.draw(self.app.screen)
-
+        
+        if self.hover_x >= 0 and self.hover_y >= 0:
+            self.app.draw_text(self.font, 622, 44, "x=%d y=%d"%(self.hover_x, self.hover_y), (255,255,255))
