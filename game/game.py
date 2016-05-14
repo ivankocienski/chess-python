@@ -3,6 +3,7 @@ import pygame as pg
 import pygame.gfxdraw as gfx
 
 from game.piece import *
+from game.board import *
 
 class Game:
 
@@ -11,47 +12,13 @@ class Game:
         self.font = self.app.loader.default_font()
         self.hover_x = -1
         self.hover_y = -1
-        self.move_piece = None
+        self.board = Board(self.app.loader)
 
-        self.piece_sprites = [
-                self.app.loader.load_image("piece-w-pawn.png"),
-                self.app.loader.load_image("piece-w-knight.png"),
-                self.app.loader.load_image("piece-w-rook.png"),
-                self.app.loader.load_image("piece-w-bishop.png"),
-                self.app.loader.load_image("piece-w-queen.png"),
-                self.app.loader.load_image("piece-w-king.png"),
-
-                self.app.loader.load_image("piece-b-pawn.png"),
-                self.app.loader.load_image("piece-b-knight.png"),
-                self.app.loader.load_image("piece-b-rook.png"),
-                self.app.loader.load_image("piece-b-bishop.png"),
-                self.app.loader.load_image("piece-b-queen.png"),
-                self.app.loader.load_image("piece-b-king.png")]
-
+        self.move_piece  = None
+        self.move_targets = []
 
     def reset(self):
-        self.pieces = [
-                PawnPiece(   self.piece_sprites, COLOR_WHITE, 0, 0),
-                KnightPiece( self.piece_sprites, COLOR_WHITE, 1, 0),
-                RookPiece(   self.piece_sprites, COLOR_WHITE, 2, 0),
-                BishopPiece( self.piece_sprites, COLOR_WHITE, 3, 0),
-                QueenPiece(  self.piece_sprites, COLOR_WHITE, 4, 0),
-                KingPiece(   self.piece_sprites, COLOR_WHITE, 5, 0),
-
-                PawnPiece(   self.piece_sprites, COLOR_BLACK, 0, 1),
-                KnightPiece( self.piece_sprites, COLOR_BLACK, 1, 1),
-                RookPiece(   self.piece_sprites, COLOR_BLACK, 2, 1),
-                BishopPiece( self.piece_sprites, COLOR_BLACK, 3, 1),
-                QueenPiece(  self.piece_sprites, COLOR_BLACK, 4, 1),
-                KingPiece(   self.piece_sprites, COLOR_BLACK, 5, 1),
-                ]
-        pass
-
-    def find_piece_at(self, xpos, ypos):
-        for p in self.pieces:
-            if p.is_at(xpos, ypos):
-                return p
-        return None
+        self.board.reset()
 
     def resize(self):
         pass
@@ -70,19 +37,43 @@ class Game:
             return
 
         self.hover_y = int(yp / 64)
-
-        #print("move x=%d  y=%d"%(self.hover_x, self.hover_y))
         self.app.repaint()
 
     def mouse_down(self):
         if self.move_piece:
-            self.move_piece.about_to_move(False)
 
-        piece = self.find_piece_at(self.hover_x, self.hover_y)
-        if bool(piece):
-            self.move_piece = piece
-            print("piece=%s"%piece)
-            piece.about_to_move()
+            # deselect selected piece
+            if self.move_piece.is_at(self.hover_x, self.hover_y):
+                self.move_targets = ()
+                self.move_piece.about_to_move(False)
+                self.move_piece = None
+
+            else:
+                # possibly move selected piece 
+                can_move = False
+                for mt in self.move_targets:
+                    if self.hover_x == mt[0] and self.hover_y == mt[1]:
+                        can_move = True
+                        break
+
+                if can_move:
+                    self.move_piece.move_to(self.hover_x, self.hover_y)
+                    self.move_targets = ()
+                    self.move_piece.about_to_move(False)
+                    self.move_piece = None
+
+
+        else: # move_piece is None
+            piece = self.board.find_piece_at(self.hover_x, self.hover_y)
+            if bool(piece):
+                self.move_piece = piece
+                self.move_targets = piece.legal_moves(self.board)
+                print("piece=%s"%piece)
+                piece.about_to_move()
+            else:
+                self.move_piece   = None
+                self.move_targets = ()
+
         
         self.app.repaint()
 
@@ -114,8 +105,15 @@ class Game:
         #    gfx.line(self.app.screen, pos, 44, pos, 556, (150, 150, 150))
         #    pos += 64
 
-        for piece in self.pieces:
-            piece.draw(self.app.screen)
+        for mt in self.move_targets:
+            dx = 44 + mt[0] * 64
+            dy = 44 + mt[1] * 64
+
+            self.app.screen.fill((4, 144, 110), (dx, dy, 64, 64))
+
+
+        self.board.draw(self.app.screen)
+        
         
         if self.hover_x >= 0 and self.hover_y >= 0:
             self.app.draw_text(self.font, 622, 44, "x=%d y=%d"%(self.hover_x, self.hover_y), (255,255,255))

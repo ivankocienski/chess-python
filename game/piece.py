@@ -27,6 +27,13 @@ class Piece():
     def about_to_move(self, yes=True):
         self.highlight_for_move = yes
 
+    def legal_moves(self, board):
+        return ()
+
+    def move_to(self, x, y):
+        self.xpos = x
+        self.ypos = y
+
     def draw(self, screen):
         dx = 44 + self.xpos * 64
         dy = 44 + self.ypos * 64
@@ -79,4 +86,24 @@ class KingPiece(Piece):
         if color == COLOR_BLACK:
             spr += SPR_BLACK
         super().__init__(sprites[spr], xpos, ypos)
+
+    def legal_moves(self, board):
+        moves = [
+                (self.xpos-1, self.ypos-1),
+                (self.xpos  , self.ypos-1),
+                (self.xpos+1, self.ypos-1),
+                (self.xpos-1, self.ypos),
+                (self.xpos+1, self.ypos),
+                (self.xpos-1, self.ypos+1),
+                (self.xpos  , self.ypos+1),
+                (self.xpos+1, self.ypos+1)]
+
+        allowed_moves = []
+        for m in moves:
+            if not board.in_bounds(m[0], m[1]):
+                continue
+            allowed_moves.append(m)
+
+        return allowed_moves
+                
 
