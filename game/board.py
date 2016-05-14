@@ -38,9 +38,9 @@ class Board:
                 #KingPiece(   self.piece_sprites, COLOR_BLACK, 5, 1),
                 #]
         self.pieces = [
-                RookPiece(   self.piece_sprites, COLOR_WHITE, 5, 5),
-                BishopPiece(   self.piece_sprites, COLOR_WHITE, 3, 3),
-                QueenPiece(   self.piece_sprites, COLOR_WHITE, 3, 5),
+                #RookPiece(   self.piece_sprites, COLOR_WHITE, 5, 5),
+                #BishopPiece(   self.piece_sprites, COLOR_WHITE, 3, 3),
+                KnightPiece(   self.piece_sprites, COLOR_WHITE, 3, 5),
 
                 ]
 

@@ -156,6 +156,34 @@ class KnightPiece(Piece):
             spr += SPR_BLACK
         super().__init__(sprites[spr], xpos, ypos)
 
+    def legal_moves(self, board): 
+        allowed_moves = []
+        if board.in_bounds(self.xpos-1, self.ypos-2):
+            allowed_moves.append((self.xpos-1, self.ypos-2))
+
+        if board.in_bounds(self.xpos+1, self.ypos-2):
+            allowed_moves.append((self.xpos+1, self.ypos-2))
+
+        if board.in_bounds(self.xpos-1, self.ypos+2):
+            allowed_moves.append((self.xpos-1, self.ypos+2))
+
+        if board.in_bounds(self.xpos+1, self.ypos+2):
+            allowed_moves.append((self.xpos+1, self.ypos+2))
+
+        if board.in_bounds(self.xpos-2, self.ypos-1):
+            allowed_moves.append((self.xpos-2, self.ypos-1))
+
+        if board.in_bounds(self.xpos-2, self.ypos+1):
+            allowed_moves.append((self.xpos-2, self.ypos+1))
+
+        if board.in_bounds(self.xpos+2, self.ypos-1):
+            allowed_moves.append((self.xpos+2, self.ypos-1))
+
+        if board.in_bounds(self.xpos+2, self.ypos+1):
+            allowed_moves.append((self.xpos+2, self.ypos+1))
+
+        return allowed_moves
+
 class RookPiece(Piece):
     def __init__(self, sprites, color, xpos, ypos):
         spr = SPR_ROOK
