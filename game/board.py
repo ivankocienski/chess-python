@@ -40,6 +40,7 @@ class Board:
         self.pieces = [
                 RookPiece(   self.piece_sprites, COLOR_WHITE, 5, 5),
                 BishopPiece(   self.piece_sprites, COLOR_WHITE, 3, 3),
+                QueenPiece(   self.piece_sprites, COLOR_WHITE, 3, 5),
 
                 ]
 
