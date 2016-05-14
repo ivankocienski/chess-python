@@ -66,12 +66,108 @@ class RookPiece(Piece):
             spr += SPR_BLACK
         super().__init__(sprites[spr], xpos, ypos)
 
+    def legal_moves(self, board):
+        
+        try_left  = (self.xpos-1, self.ypos)
+        try_right = (self.xpos+1, self.ypos)
+        try_up    = (self.xpos,   self.ypos-1)
+        try_down  = (self.xpos,   self.ypos+1)
+
+        allowed_moves = []
+        for i in range(8):
+            done = True
+
+            if try_up:
+                if board.in_bounds(try_up[0], try_up[1]) and not board.find_piece_at(try_up[0], try_up[1]):
+                    done = False
+                    allowed_moves.append(try_up)
+                    try_up = (try_up[0], try_up[1]-1)
+                else: 
+                    try_up = None 
+
+            if try_down:
+                if board.in_bounds(try_down[0], try_down[1]) and not board.find_piece_at(try_down[0], try_down[1]):
+                    done = False
+                    allowed_moves.append(try_down)
+                    try_down = (try_down[0], try_down[1]+1)
+                else: 
+                    try_down = None 
+
+            if try_left:
+                if board.in_bounds(try_left[0], try_left[1]) and not board.find_piece_at(try_left[0], try_left[1]):
+                    done = False
+                    allowed_moves.append(try_left)
+                    try_left = (try_left[0]-1, try_left[1])
+                else: 
+                    try_left = None 
+
+            if try_right:
+                if board.in_bounds(try_right[0], try_right[1]) and not board.find_piece_at(try_right[0], try_right[1]):
+                    done = False
+                    allowed_moves.append(try_right)
+                    try_right = (try_right[0]+1, try_right[1])
+                else: 
+                    try_right = None 
+            
+            if done:
+                break 
+
+        return allowed_moves
+
 class BishopPiece(Piece):
     def __init__(self, sprites, color, xpos, ypos):
         spr = SPR_BISHOP
         if color == COLOR_BLACK:
             spr += SPR_BLACK
         super().__init__(sprites[spr], xpos, ypos)
+
+    def legal_moves(self, board):
+        
+        try_left_up    = (self.xpos-1, self.ypos-1)
+        try_right_up   = (self.xpos+1, self.ypos-1)
+        try_left_down  = (self.xpos-1, self.ypos+1)
+        try_right_down = (self.xpos+1, self.ypos+1)
+
+        allowed_moves = []
+        for i in range(8):
+            done = True
+
+            if try_left_up:
+                if board.in_bounds(try_left_up[0], try_left_up[1]) and not board.find_piece_at(try_left_up[0], try_left_up[1]):
+                    done = False
+                    allowed_moves.append(try_left_up)
+                    try_left_up = (try_left_up[0]-1, try_left_up[1]-1)
+                else: 
+                    try_left_up = None 
+
+            if try_right_up:
+                if board.in_bounds(try_right_up[0], try_right_up[1]) and not board.find_piece_at(try_right_up[0], try_right_up[1]):
+                    done = False
+                    allowed_moves.append(try_right_up)
+                    try_right_up = (try_right_up[0]+1, try_right_up[1]-1)
+                else: 
+                    try_right_up = None 
+
+            if try_left_down:
+                if board.in_bounds(try_left_down[0], try_left_down[1]) and not board.find_piece_at(try_left_down[0], try_left_down[1]):
+                    done = False
+                    allowed_moves.append(try_left_down)
+                    try_left_down = (try_left_down[0]-1, try_left_down[1]+1)
+                else: 
+                    try_left_down = None 
+
+            if try_right_down:
+                if board.in_bounds(try_right_down[0], try_right_down[1]) and not board.find_piece_at(try_right_down[0], try_right_down[1]):
+                    done = False
+                    allowed_moves.append(try_right_down)
+                    try_right_down = (try_right_down[0]+1, try_right_down[1]+1)
+                else: 
+                    try_right_down = None 
+            
+            if done:
+                break 
+
+        return allowed_moves
 
 class QueenPiece(Piece):
     def __init__(self, sprites, color, xpos, ypos):

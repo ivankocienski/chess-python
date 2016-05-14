@@ -38,7 +38,9 @@ class Board:
                 #KingPiece(   self.piece_sprites, COLOR_BLACK, 5, 1),
                 #]
         self.pieces = [
-                KingPiece(   self.piece_sprites, COLOR_WHITE, 5, 5),
+                RookPiece(   self.piece_sprites, COLOR_WHITE, 5, 5),
+                BishopPiece(   self.piece_sprites, COLOR_WHITE, 3, 3),
+
                 ]
 
     def find_piece_at(self, xpos, ypos):
