@@ -15,11 +15,13 @@ COLOR_WHITE = -1
 COLOR_BLACK = 1
 
 class Piece():
-    def __init__(self, image, xpos, ypos):
-        self.xpos = xpos
-        self.ypos = ypos
-        self.image = image
-        self.highlight_for_move = False
+    def __init__(self, board, sprite, color, xpos, ypos):
+        self.board     = board
+        self.xpos      = xpos
+        self.ypos      = ypos
+        self.image     = sprite 
+        self.color     = color
+        self.has_moved = False
 
     def is_at(self, x, y):
         return self.xpos == x and self.ypos == y
@@ -31,155 +33,118 @@ class Piece():
         return ()
 
     def move_to(self, x, y):
+        self.has_moved = True
+        self.board.position_at(self.xpos, self.ypos).piece = None
+
         self.xpos = x
         self.ypos = y
+        self.board.position_at(self.xpos, self.ypos).piece = self
+
+    def _legal_move_in_dir(self, board, count, x, y, xi, yi):
+        allowed_moves = []
+
+        for i in range(count):
+
+            if self.board.in_bounds(x, y) and not self.board.position_at(x, y).piece:
+                allowed_moves.append((x, y))
+                x += xi
+                y += yi
+            else:
+                break 
+
+        return allowed_moves
 
     def _legal_diagonal_moves(self, board, count=8):
         
-        try_left_up    = (self.xpos-1, self.ypos-1)
-        try_right_up   = (self.xpos+1, self.ypos-1)
-        try_left_down  = (self.xpos-1, self.ypos+1)
-        try_right_down = (self.xpos+1, self.ypos+1)
-
         allowed_moves = []
-        for i in range(count):
-            done = True
 
-            if try_left_up:
-                if board.in_bounds(try_left_up[0], try_left_up[1]) and not board.find_piece_at(try_left_up[0], try_left_up[1]):
-                    done = False
-                    allowed_moves.append(try_left_up)
-                    try_left_up = (try_left_up[0]-1, try_left_up[1]-1)
-                else: 
-                    try_left_up = None 
+        # NW
+        allowed_moves.extend(self._legal_move_in_dir(board, count, self.xpos-1, self.ypos-1, -1, -1))
 
-            if try_right_up:
-                if board.in_bounds(try_right_up[0], try_right_up[1]) and not board.find_piece_at(try_right_up[0], try_right_up[1]):
-                    done = False
-                    allowed_moves.append(try_right_up)
-                    try_right_up = (try_right_up[0]+1, try_right_up[1]-1)
-                else: 
-                    try_right_up = None 
+        # NE
+        allowed_moves.extend(self._legal_move_in_dir(board, count, self.xpos+1, self.ypos-1,  1, -1))
 
-            if try_left_down:
-                if board.in_bounds(try_left_down[0], try_left_down[1]) and not board.find_piece_at(try_left_down[0], try_left_down[1]):
-                    done = False
-                    allowed_moves.append(try_left_down)
-                    try_left_down = (try_left_down[0]-1, try_left_down[1]+1)
-                else: 
-                    try_left_down = None 
+        # SW
+        allowed_moves.extend(self._legal_move_in_dir(board, count, self.xpos-1, self.ypos+1, -1,  1))
 
-            if try_right_down:
-                if board.in_bounds(try_right_down[0], try_right_down[1]) and not board.find_piece_at(try_right_down[0], try_right_down[1]):
-                    done = False
-                    allowed_moves.append(try_right_down)
-                    try_right_down = (try_right_down[0]+1, try_right_down[1]+1)
-                else: 
-                    try_right_down = None 
-            
-            if done:
-                break 
+        # SE
+        allowed_moves.extend(self._legal_move_in_dir(board, count, self.xpos+1, self.ypos+1,  1,  1))
 
         return allowed_moves
 
     def _legal_cardinal_moves(self, board, count=8):
 
-        try_left  = (self.xpos-1, self.ypos)
-        try_right = (self.xpos+1, self.ypos)
-        try_up    = (self.xpos,   self.ypos-1)
-        try_down  = (self.xpos,   self.ypos+1)
-
         allowed_moves = []
-        for i in range(count):
-            done = True
 
-            if try_up:
-                if board.in_bounds(try_up[0], try_up[1]) and not board.find_piece_at(try_up[0], try_up[1]):
-                    done = False
-                    allowed_moves.append(try_up)
-                    try_up = (try_up[0], try_up[1]-1)
-                else: 
-                    try_up = None 
+        # W
+        allowed_moves.extend(self._legal_move_in_dir(board, count, self.xpos-1, self.ypos, -1, 0))
 
-            if try_down:
-                if board.in_bounds(try_down[0], try_down[1]) and not board.find_piece_at(try_down[0], try_down[1]):
-                    done = False
-                    allowed_moves.append(try_down)
-                    try_down = (try_down[0], try_down[1]+1)
-                else: 
-                    try_down = None 
+        # E
+        allowed_moves.extend(self._legal_move_in_dir(board, count, self.xpos+1, self.ypos, 1, 0))
 
-            if try_left:
-                if board.in_bounds(try_left[0], try_left[1]) and not board.find_piece_at(try_left[0], try_left[1]):
-                    done = False
-                    allowed_moves.append(try_left)
-                    try_left = (try_left[0]-1, try_left[1])
-                else: 
-                    try_left = None 
+        # N
+        allowed_moves.extend(self._legal_move_in_dir(board, count, self.xpos, self.ypos-1, 0, -1))
 
-            if try_right:
-                if board.in_bounds(try_right[0], try_right[1]) and not board.find_piece_at(try_right[0], try_right[1]):
-                    done = False
-                    allowed_moves.append(try_right)
-                    try_right = (try_right[0]+1, try_right[1])
-                else: 
-                    try_right = None 
-            
-            if done:
-                break 
+        # S
+        allowed_moves.extend(self._legal_move_in_dir(board, count, self.xpos, self.ypos+1, 0, 1))
 
         return allowed_moves
-        pass
 
-    def draw(self, screen):
-        dx = 44 + self.xpos * 64
-        dy = 44 + self.ypos * 64
-        
-        if self.highlight_for_move:
-            gfx.rectangle(screen, (dx, dy, 64, 64), (4, 133, 168))
-            gfx.rectangle(screen, (dx+1, dy+1, 62, 62), (4, 133, 168))
-            #screen.fill((4, 133, 168), (dx, dy, 64, 64))
-
+    def draw(self, screen, dx, dy):
         screen.blit(self.image, (dx+8, dy+8))
 
 class PawnPiece(Piece):
-    def __init__(self, sprites, color, xpos, ypos):
+    def __init__(self, board, color, xpos, ypos):
         spr = SPR_PAWN
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], xpos, ypos)
+        super().__init__(board, board.piece_sprites[spr], color, xpos, ypos)
+
+    def legal_moves(self, board): 
+        allowed_moves = []
+        new_y = self.ypos + self.color
+
+        if self.board.in_bounds(self.xpos, new_y):
+            allowed_moves.append((self.xpos, new_y))
+
+        if not self.has_moved:
+            new_y += self.color
+            if self.board.in_bounds(self.xpos, new_y):
+                allowed_moves.append((self.xpos, new_y))
+        
+        return allowed_moves
 
 class KnightPiece(Piece):
     def __init__(self, sprites, color, xpos, ypos):
         spr = SPR_KNIGHT
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], xpos, ypos)
+        super().__init__(sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board): 
         allowed_moves = []
-        if board.in_bounds(self.xpos-1, self.ypos-2):
+        if self.board.in_bounds(self.xpos-1, self.ypos-2):
             allowed_moves.append((self.xpos-1, self.ypos-2))
 
-        if board.in_bounds(self.xpos+1, self.ypos-2):
+        if self.board.in_bounds(self.xpos+1, self.ypos-2):
             allowed_moves.append((self.xpos+1, self.ypos-2))
 
-        if board.in_bounds(self.xpos-1, self.ypos+2):
+        if self.board.in_bounds(self.xpos-1, self.ypos+2):
             allowed_moves.append((self.xpos-1, self.ypos+2))
 
-        if board.in_bounds(self.xpos+1, self.ypos+2):
+        if self.board.in_bounds(self.xpos+1, self.ypos+2):
             allowed_moves.append((self.xpos+1, self.ypos+2))
 
-        if board.in_bounds(self.xpos-2, self.ypos-1):
+        if self.board.in_bounds(self.xpos-2, self.ypos-1):
             allowed_moves.append((self.xpos-2, self.ypos-1))
 
-        if board.in_bounds(self.xpos-2, self.ypos+1):
+        if self.board.in_bounds(self.xpos-2, self.ypos+1):
             allowed_moves.append((self.xpos-2, self.ypos+1))
 
-        if board.in_bounds(self.xpos+2, self.ypos-1):
+        if self.board.in_bounds(self.xpos+2, self.ypos-1):
             allowed_moves.append((self.xpos+2, self.ypos-1))
 
-        if board.in_bounds(self.xpos+2, self.ypos+1):
+        if self.board.in_bounds(self.xpos+2, self.ypos+1):
             allowed_moves.append((self.xpos+2, self.ypos+1))
 
         return allowed_moves
@@ -189,7 +154,7 @@ class RookPiece(Piece):
         spr = SPR_ROOK
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], xpos, ypos)
+        super().__init__(sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board): 
         return self._legal_cardinal_moves(board)
@@ -199,7 +164,7 @@ class BishopPiece(Piece):
         spr = SPR_BISHOP
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], xpos, ypos)
+        super().__init__(sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board): 
         return self._legal_diagonal_moves(board)
@@ -209,7 +174,7 @@ class QueenPiece(Piece):
         spr = SPR_QUEEN
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], xpos, ypos)
+        super().__init__(sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board):
         card = self._legal_cardinal_moves(board)
@@ -222,7 +187,7 @@ class KingPiece(Piece):
         spr = SPR_KING
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], xpos, ypos)
+        super().__init__(sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board):
         card = self._legal_cardinal_moves(board, 1)
