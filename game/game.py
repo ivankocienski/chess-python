@@ -87,5 +87,12 @@ class Game:
 
         self.board.draw(self.app.screen) 
         
-        if self.hover_x >= 0 and self.hover_y >= 0:
-            self.app.draw_text(self.font, 622, 44, "x=%d y=%d"%(self.hover_x, self.hover_y), (255,255,255))
+        #if self.hover_x >= 0 and self.hover_y >= 0:
+        #    self.app.draw_text(self.font, 622, 44, "x=%d y=%d"%(self.hover_x, self.hover_y), (255,255,255))
+
+        self.app.draw_text(self.font, 622, 100, "Black Moves %d"    % self.black_move_count, (255,255,255))
+        self.app.draw_text(self.font, 622, 120, "Black Captures %d" % self.black_capture_count, (255,255,255))
+
+        self.app.draw_text(self.font, 622, 500, "White Moves %d"    % self.white_move_count, (255,255,255))
+        self.app.draw_text(self.font, 622, 520, "White Captures %d" % self.white_capture_count, (255,255,255))
+        

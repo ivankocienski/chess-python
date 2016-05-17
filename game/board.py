@@ -67,6 +67,7 @@ class Board:
         self.board = [Board.Position(self, x, y) for y in range(8) for x in range(8)]
 
         self.position_at(3,5).set_piece(PawnPiece, COLOR_WHITE)
+        self.position_at(3,2).set_piece(PawnPiece, COLOR_BLACK)
 
         #self.pieces = [
                 #PawnPiece(   self.piece_sprites, COLOR_WHITE, 0, 0),
