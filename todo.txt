@@ -1,0 +1,11 @@
+TODO:
+
+* pieces can capture other pieces
+* pieces can't capture their own sides
+* alternating player moves
+* move count / capture count
+
+
+- en passant
+- castling
+- pawn promotion

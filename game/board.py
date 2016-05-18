@@ -66,27 +66,15 @@ class Board:
 
         self.board = [Board.Position(self, x, y) for y in range(8) for x in range(8)]
 
+        array = (RookPiece, KnightPiece, BishopPiece, QueenPiece, 
+                KingPiece, BishopPiece, KnightPiece, RookPiece)
+
         for i in range(8):
+            self.position_at(i,0).set_piece(array[i],  COLOR_BLACK)
             self.position_at(i,1).set_piece(PawnPiece, COLOR_BLACK)
+
             self.position_at(i,6).set_piece(PawnPiece, COLOR_WHITE)
-
-        self.position_at(0,0).set_piece(RookPiece,   COLOR_BLACK)
-        self.position_at(7,0).set_piece(RookPiece,   COLOR_BLACK)
-        self.position_at(1,0).set_piece(KnightPiece, COLOR_BLACK)
-        self.position_at(6,0).set_piece(KnightPiece, COLOR_BLACK)
-        self.position_at(2,0).set_piece(BishopPiece, COLOR_BLACK)
-        self.position_at(5,0).set_piece(BishopPiece, COLOR_BLACK)
-        self.position_at(3,0).set_piece(QueenPiece,  COLOR_BLACK)
-        self.position_at(4,0).set_piece(KingPiece,   COLOR_BLACK)
-
-        self.position_at(0,7).set_piece(RookPiece,   COLOR_WHITE)
-        self.position_at(7,7).set_piece(RookPiece,   COLOR_WHITE)
-        self.position_at(1,7).set_piece(KnightPiece, COLOR_WHITE)
-        self.position_at(6,7).set_piece(KnightPiece, COLOR_WHITE)
-        self.position_at(2,7).set_piece(BishopPiece, COLOR_WHITE)
-        self.position_at(5,7).set_piece(BishopPiece, COLOR_WHITE)
-        self.position_at(3,7).set_piece(QueenPiece,  COLOR_WHITE)
-        self.position_at(4,7).set_piece(KingPiece,   COLOR_WHITE)
+            self.position_at(i,7).set_piece(array[i],  COLOR_WHITE)
 
     def in_bounds(self, xpos, ypos):
         if xpos < 0 or xpos > 7:

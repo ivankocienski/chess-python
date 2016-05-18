@@ -45,10 +45,13 @@ class Piece():
 
         for i in range(count):
 
-            if self.board.in_bounds(x, y) and not self.board.position_at(x, y).piece:
+            if self.board.in_bounds(x, y):
                 allowed_moves.append((x, y))
                 x += xi
                 y += yi
+
+                if self.board.position_at(x, y).piece:
+                    break
             else:
                 break 
 
