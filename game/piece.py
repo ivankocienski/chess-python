@@ -115,11 +115,11 @@ class PawnPiece(Piece):
         return allowed_moves
 
 class KnightPiece(Piece):
-    def __init__(self, sprites, color, xpos, ypos):
+    def __init__(self, board, color, xpos, ypos):
         spr = SPR_KNIGHT
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], color, xpos, ypos)
+        super().__init__(board, board.piece_sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board): 
         allowed_moves = []
@@ -150,31 +150,31 @@ class KnightPiece(Piece):
         return allowed_moves
 
 class RookPiece(Piece):
-    def __init__(self, sprites, color, xpos, ypos):
+    def __init__(self, board, color, xpos, ypos):
         spr = SPR_ROOK
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], color, xpos, ypos)
+        super().__init__(board, board.piece_sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board): 
         return self._legal_cardinal_moves(board)
         
 class BishopPiece(Piece):
-    def __init__(self, sprites, color, xpos, ypos):
+    def __init__(self, board, color, xpos, ypos):
         spr = SPR_BISHOP
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], color, xpos, ypos)
+        super().__init__(board, board.piece_sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board): 
         return self._legal_diagonal_moves(board)
 
 class QueenPiece(Piece):
-    def __init__(self, sprites, color, xpos, ypos):
+    def __init__(self, board, color, xpos, ypos):
         spr = SPR_QUEEN
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], color, xpos, ypos)
+        super().__init__(board, board.piece_sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board):
         card = self._legal_cardinal_moves(board)
@@ -183,11 +183,11 @@ class QueenPiece(Piece):
         return card
 
 class KingPiece(Piece):
-    def __init__(self, sprites, color, xpos, ypos):
+    def __init__(self, board, color, xpos, ypos):
         spr = SPR_KING
         if color == COLOR_BLACK:
             spr += SPR_BLACK
-        super().__init__(sprites[spr], color, xpos, ypos)
+        super().__init__(board, board.piece_sprites[spr], color, xpos, ypos)
 
     def legal_moves(self, board):
         card = self._legal_cardinal_moves(board, 1)

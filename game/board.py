@@ -66,30 +66,27 @@ class Board:
 
         self.board = [Board.Position(self, x, y) for y in range(8) for x in range(8)]
 
-        self.position_at(3,5).set_piece(PawnPiece, COLOR_WHITE)
-        self.position_at(3,2).set_piece(PawnPiece, COLOR_BLACK)
+        for i in range(8):
+            self.position_at(i,1).set_piece(PawnPiece, COLOR_BLACK)
+            self.position_at(i,6).set_piece(PawnPiece, COLOR_WHITE)
 
-        #self.pieces = [
-                #PawnPiece(   self.piece_sprites, COLOR_WHITE, 0, 0),
-                #KnightPiece( self.piece_sprites, COLOR_WHITE, 1, 0),
-                #RookPiece(   self.piece_sprites, COLOR_WHITE, 2, 0),
-                #BishopPiece( self.piece_sprites, COLOR_WHITE, 3, 0),
-                #QueenPiece(  self.piece_sprites, COLOR_WHITE, 4, 0),
-                #KingPiece(   self.piece_sprites, COLOR_WHITE, 5, 0),
+        self.position_at(0,0).set_piece(RookPiece,   COLOR_BLACK)
+        self.position_at(7,0).set_piece(RookPiece,   COLOR_BLACK)
+        self.position_at(1,0).set_piece(KnightPiece, COLOR_BLACK)
+        self.position_at(6,0).set_piece(KnightPiece, COLOR_BLACK)
+        self.position_at(2,0).set_piece(BishopPiece, COLOR_BLACK)
+        self.position_at(5,0).set_piece(BishopPiece, COLOR_BLACK)
+        self.position_at(3,0).set_piece(QueenPiece,  COLOR_BLACK)
+        self.position_at(4,0).set_piece(KingPiece,   COLOR_BLACK)
 
-                #PawnPiece(   self.piece_sprites, COLOR_BLACK, 0, 1),
-                #KnightPiece( self.piece_sprites, COLOR_BLACK, 1, 1),
-                #RookPiece(   self.piece_sprites, COLOR_BLACK, 2, 1),
-                #BishopPiece( self.piece_sprites, COLOR_BLACK, 3, 1),
-                #QueenPiece(  self.piece_sprites, COLOR_BLACK, 4, 1),
-                #KingPiece(   self.piece_sprites, COLOR_BLACK, 5, 1),
-                #]
-        #self.pieces = [
-                #RookPiece(   self.piece_sprites, COLOR_WHITE, 5, 5),
-                #BishopPiece(   self.piece_sprites, COLOR_WHITE, 3, 3),
-                #PawnPiece(   self.piece_sprites, COLOR_WHITE, 3, 5),
-
-                #]
+        self.position_at(0,7).set_piece(RookPiece,   COLOR_WHITE)
+        self.position_at(7,7).set_piece(RookPiece,   COLOR_WHITE)
+        self.position_at(1,7).set_piece(KnightPiece, COLOR_WHITE)
+        self.position_at(6,7).set_piece(KnightPiece, COLOR_WHITE)
+        self.position_at(2,7).set_piece(BishopPiece, COLOR_WHITE)
+        self.position_at(5,7).set_piece(BishopPiece, COLOR_WHITE)
+        self.position_at(3,7).set_piece(QueenPiece,  COLOR_WHITE)
+        self.position_at(4,7).set_piece(KingPiece,   COLOR_WHITE)
 
     def in_bounds(self, xpos, ypos):
         if xpos < 0 or xpos > 7:
